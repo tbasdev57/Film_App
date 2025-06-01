@@ -1,4 +1,3 @@
-// Ne redéclare pas "const key" ici
 const movieNameRef = document.getElementById("movie-name");
 const searchBtn = document.getElementById("search-btn");
 const result = document.getElementById("result");
@@ -6,7 +5,7 @@ const result = document.getElementById("result");
 let getMovie = () => {
     let movieName = movieNameRef.value.trim();
     if (movieName.length === 0) {
-        result.innerHTML = `<h3 class="msg">Merci d'entrer un nom de film</h3>`;
+        result.innerHTML = `<h3 class="msg">Merci d'entrer un nom de film ou série</h3>`;
         return;
     }
 
@@ -17,17 +16,22 @@ let getMovie = () => {
         .then(data => {
             if (data.Response === "True") {
                 result.innerHTML = `
-                    <div class="info">
-                        <img src="${data.Poster}" alt="Poster de ${data.Title}">
-                        <h2>${data.Title}</h2>
-                        <p>${data.Plot}</p>
+                    <div class="movie-card">
+                        <img src="${data.Poster !== "N/A" ? data.Poster : 'https://via.placeholder.com/200x300'}" alt="Affiche">
+                        <div class="details">
+                            <h2>${data.Title}</h2>
+                            <p><strong>${data.imdbRating}</strong> | ${data.Rated} | ${data.Year} | ${data.Runtime}</p>
+                            <p><strong>Genres:</strong> ${data.Genre}</p>
+                            <p><strong>Plot:</strong> ${data.Plot}</p>
+                            <p><strong>Cast:</strong> ${data.Actors}</p>
+                        </div>
                     </div>
                 `;
             } else {
                 result.innerHTML = `<h3 class="msg">${data.Error}</h3>`;
             }
         })
-        .catch(err => {
+        .catch(() => {
             result.innerHTML = `<h3 class="msg">Erreur lors de la récupération des données</h3>`;
         });
 };
